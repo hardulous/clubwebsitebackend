@@ -1,19 +1,20 @@
-const mongoose = require('mongoose');
-const Razorpay = require('razorpay')
+const mysql = require("mysql");
+const Razorpay = require("razorpay");
 
-const connectToMongo = (URL)=>{
-    
-    console.log("CONNECTED TO MONGO")
-    return mongoose.connect(URL);
-}
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "kingrestaurantandbar",
+});
 
 // the instance of razorpay contain all method provided by razorpay API
 const instance = new Razorpay({
-    key_id: process.env.RAZORPAY_API_KEY,
-    key_secret: process.env.RAZORPAY_API_SECRET , 
+  key_id: process.env.RAZORPAY_API_KEY,
+  key_secret: process.env.RAZORPAY_API_SECRET,
 });
 
 module.exports = {
-    connectToMongo,
-    instance
+  db,
+  instance,
 };

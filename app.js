@@ -1,7 +1,6 @@
 const app = require('express')();
 const dotenv = require('dotenv');
 dotenv.config();
-const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const expressValidator = require('express-validator')
 const cors = require('cors');
@@ -10,9 +9,10 @@ const corsOptions ={
     credentials:true,            
     optionSuccessStatus:200
 }
+
 const paymentRoutes = require('./routes/paymentRoutes.js');
 
-const {connectToMongo,instance} = require('./db.js');
+const {db,instance} = require('./db.js');
 
 const PORT = process.env.PORT || 4000;
 
@@ -23,20 +23,16 @@ app.use([ cors(corsOptions) , bodyParser.json() , bodyParser.urlencoded({extende
 app.use("/api",paymentRoutes);
 
 // DATABASE CONNECTION
-const start = async(URL)=>{
-      
-    try {
-       
-       await connectToMongo(URL); 
-       app.listen( PORT , ()=>{
-       
-        console.log(` Server is listening on port ${PORT} `)
-
-       })
-        
-    } catch (error) {
-        console.log(error)
+db.connect((err)=>{
+    if(err){
+        console.log(err.message)
     }
-}
-
-start(process.env.CONNECTION_URL);
+    else{
+        console.log("Connected to mysql")
+        app.listen( PORT , ()=>{
+   
+            console.log(` Server is listening on port ${PORT} `)
+    
+           })
+    }
+})
